@@ -20,6 +20,8 @@ class HomeVC: DMBaseViewController , UITableViewDataSource , UITableViewDelegate
 
         self.title = "Home VC"
         
+        print(user.name) ;
+        
         self.setupViews()
     }
     

@@ -7,10 +7,20 @@
 //
 
 import Foundation
+import UIKit
 
-
-
-
+func imagesWithName(name:String,num:Int?) -> Array<UIImage> {
+    var arr:[UIImage] = [];
+    for i in 1...(num ?? 10) {
+        let str = "\(name)_\(i)";
+        let fileName = Bundle.main.path(forResource: str, ofType: "png");
+        let img = UIImage.init(contentsOfFile: fileName ?? "");
+        if (img != nil) {
+            arr.append(img!);
+        }
+    }
+    return arr;
+}
 
 
 

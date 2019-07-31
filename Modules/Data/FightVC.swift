@@ -11,50 +11,52 @@ import UIKit
 
 class FightVC: DMBaseViewController {
 
-    let npc1 = NpcModel.init();
-    let npc2 = NpcModel.init();
+    let _sceneIV = UIImageView.init(frame: CGRect.init(x: 0, y: 0, width: kScreenW, height: kScreenH));
+    let _timeLab = UILabel.init(frame: CGRect.init(x: kScreenW/2, y: 40, width: 50, height: 20));
+    
+    let _npc1 = NpcModel.init(basicName: "李逍遥", dict: nil, person: true);
+    let _npc2 = NpcModel.init(basicName: "怪物1", dict: nil, person: false);
+    
+    lazy var _npcV1:NpcView = NpcView.init(frame: CGRect.init(x: 380, y: 90, width: 0, height: 0), npc:_npc1);
+    lazy var _npcV2 = NpcView.init(frame: CGRect.init(x: 220, y: 90, width: 0, height: 0), npc:_npc2);
+    
+    let _beginTime = Date.init();
+    lazy var _link = CADisplayLink.init(target: self, selector: #selector(fight));
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        npc1.name = "正常";
-    
-        npc2.name = "一转";
-        npc2.foreverLevel = 1;
+        self.setup();
         
-        
-        fight();
+        _link.add(to: RunLoop.current, forMode: RunLoop.Mode.common);
     }
-
-    func fight() {
-        npc1.updateValues();
-        npc2.updateValues();
-
-        var time:Double = 0;
-        var gameover:Bool = false;
-        var loser:NpcModel? = nil;
-
-        while (!gameover) {
-            time += 0.001;
-            if time >= npc1.nextTime {
-                npc1.attackNpc(npc2);
-                if npc2.blood <= 0 {
-                    gameover = true;
-                    loser = npc2;
-                    continue;
-                }
-            }
-            if time >= npc2.nextTime {
-                npc2.attackNpc(npc1);
-                if npc1.blood <= 0 {
-                    gameover = true;
-                    loser = npc1;
-                    continue;
-                }
-            }
+    
+    func setup() {
+//        _sceneIV.image = UIImage.init(named:"scene_40");
+        
+        _timeLab.font = UIFont.boldSystemFont(ofSize: 18);
+        _timeLab.textColor = UIColor.green;
+        
+        self.view.addSubview(_sceneIV);
+        self.view.addSubview(_timeLab);
+        self.view.addSubview(_npcV2);
+        self.view.addSubview(_npcV1);
+    }
+    
+    @objc func fight() {
+        
+        let time = Date.init().timeIntervalSince(_beginTime);
+        
+        _timeLab.text = "\(Int(time))";
+    
+        if time >= _npc1.nextTime {
+            _npcV1.attackNpc(_npcV2);
+        }
+        if time >= _npc2.nextTime {
+            _npcV2.attackNpc(_npcV1);
         }
         
-        print("Game over : \(loser?.name ?? "")");
+//        print("Game over : \(loser?.name ?? "")");
     }
     
     

@@ -6,27 +6,13 @@
 //  Copyright © 2018年 西安旺豆电子信息有限公司. All rights reserved.
 //
 
-//    static func shareUser() -> UserInfo {
-//        struct Static {
-//            static var onceToken:dispatch_once_t = 0
-//            static var userInfo:UserInfo?
-//        }
-//        if (Static.userInfo != nil) {
-//            return Static.userInfo!
-//        }
-//
-//        dispatch_once(&Static.onceToken,{
-//            Static.userInfo = UserInfo()
-//        })
-//        return Static.userInfo!
-//    }
-//
-
-
 
 import UIKit
 
-let kUserInfo = "UserInfo.data"
+let kUserInfoFile = "UserInfo.data"
+let kNpcListFile = "NpcList.data"
+let kHeroListFile = "HeroList.data"
+
 
 let user = UserInfo.shareUser
 
@@ -40,8 +26,8 @@ class UserInfo: NSObject , NSCoding {
     var password : String?
     var token : String?
     
-    
-    
+    var npcList:[NpcModel]?
+    var heroList:[NpcModel]?
     
     
     
@@ -51,23 +37,26 @@ class UserInfo: NSObject , NSCoding {
     // {} 中间的只会在第一次调用shareUser的时候会调用
     // 并且遵循了dispatch_once  已经测试过
     static let shareUser: UserInfo = {
-        let info = NSKeyedUnarchiver.unarchiveObject(withFile: getFilePath()) as? UserInfo
+        let info = NSKeyedUnarchiver.unarchiveObject(withFile: getFilePath(file: kUserInfoFile)) as? UserInfo
         if (info != nil) {
+            info?.initNpc();
             return info!
         } else {
-            return UserInfo()
+            let tmpInfo = UserInfo();
+            tmpInfo.initNpc()
+            return tmpInfo
         }
     }()
     
     
-    static func getFilePath() -> String {
+    static func getFilePath(file:String) -> String {
         var path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
-        path += "/\(kUserInfo)"
+        path += "/\(file)"
         return path
     }
 
     func write() -> Void {
-        let result = NSKeyedArchiver.archiveRootObject(user, toFile: UserInfo.getFilePath())
+        let result = NSKeyedArchiver.archiveRootObject(user, toFile: UserInfo.getFilePath(file: kUserInfoFile))
         if result {
             print("write ok")
         } else {
@@ -91,4 +80,32 @@ class UserInfo: NSObject , NSCoding {
         self.password = aDecoder.decodeObject(forKey: "password") as? String;
         self.token = aDecoder.decodeObject(forKey: "token") as? String;
     }
+    
+    //MARK: - NPC
+    
+    func initNpc() {
+        self.readNpc();
+    }
+    
+    func readNpc() {
+        let npcPath = UserInfo.getFilePath(file: kNpcListFile);
+        
+        let npcJson = try? String.init(contentsOfFile: npcPath);
+        
+        if npcJson != nil {
+            let arr = DMJsonTool.getArrayFromJSONString(jsonString: npcJson!);
+            
+            if arr != nil {
+                for dict in arr {
+                    print(dict)
+                }
+            }
+        }
+        
+        
+        
+    }
+    
+    
+    
 }

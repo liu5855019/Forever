@@ -10,56 +10,44 @@ import UIKit
 
 class NpcModel: NSObject {
     
-    var name = "";
-    
-    // 攻击 , 防御 , 血量 , 攻速 , 等级 , 转生等级
-    
+    let basic:NpcBasicModel;
 
-    // 攻击
-    var attackBase : Double = 15;
-    var attackGrowth : Double = 1.5;
-    var attackLevel : Int = 1;
-    
-    // 防御
-    var defenseBase : Double = 12;
-    var defenseGrowth : Double = 1.2;
-    var defenseLevel : Int = 1;
-    
-    // 血量
-    var bloodBase : Double = 100;
-    var bloodGrowth : Double = 10;
-    var bloodLevel : Int = 1;
-    
-    // 攻速
-    var speedBase : Double = 0.666;
-    var speedGrowth : Double = 0.07;
-    var speedLevel : Int = 1;
-    
-    
+    // 服务器存的值
     var level : Int = 1;
     var foreverLevel : Int = 0;
+    var surplusSkillLeave : Int = 0;    ///< 剩余技能点数
+    var speedLevel : Int = 1;
+    var bloodLevel : Int = 1;
+    var defenseLevel : Int = 1;
+    var attackLevel : Int = 1;
+    var isPerson = false;
     
-    
+    // 生成的值
     var attack: Double = 0;
     var defense: Double = 0;
     var blood: Double = 0;
+    var currentBlood : Double = 0;
     var speed: Double = 0;
     var speedTime: Double = 0;
     var nextTime:Double = 0;
     
+    //MARK: -
+    
+    // 更新/初始化数值
     func updateValues() -> Void {
-        attack = countValue(base: attackBase, growth: attackGrowth, aLevel: attackLevel);
+        attack = countValue(base: basic.attackBase, growth: basic.attackGrowth, aLevel: attackLevel);
         
-        defense = countValue(base: defenseBase, growth: defenseGrowth, aLevel: defenseLevel);
+        defense = countValue(base: basic.defenseBase, growth: basic.defenseGrowth, aLevel: defenseLevel);
         
-        blood = countValue(base: bloodBase, growth: bloodGrowth, aLevel: bloodLevel);
+        blood = countValue(base: basic.bloodBase, growth: basic.bloodGrowth, aLevel: bloodLevel);
+        currentBlood = blood;
         
-        speed = countValue(base: speedBase, growth: speedGrowth, aLevel: speedLevel);
+        speed = countValue(base: basic.speedBase, growth: basic.speedGrowth, aLevel: speedLevel);
         
         speedTime = 1/speed;
         nextTime = speedTime;
 
-        print("name:\(name)");
+        print("name:\(self.basic.name)");
         print("attack:\(attack)");
         print("defense:\(defense)");
         print("blood:\(blood)");
@@ -74,12 +62,27 @@ class NpcModel: NSObject {
 
     func attackNpc(_ npc:NpcModel) {
         let tmpBlood = attack - npc.defense;
-        npc.blood = npc.blood - tmpBlood;
+        npc.currentBlood -= tmpBlood;
 
-        print("\(npc.name) : -\(tmpBlood) 剩余\(npc.blood)");
+        print("\(npc.basic.name) : -\(tmpBlood) 剩余\(npc.currentBlood)");
 
         nextTime += speedTime;
     }
     
-    
+    init(basicName:String,dict:[String:Any]?,person:Bool?) {
+        basic = NpcBasicModel.init(name:basicName);
+        
+        if dict != nil {
+            // 服务器存的值
+            level = dmInt(dict!["leave"]) ;
+            foreverLevel = dmInt(dict!["foreverLevel"]);
+            surplusSkillLeave = dmInt(dict!["surplusSkillLeave"]);    ///< 剩余技能点数
+            speedLevel = dmInt(dict!["speedLevel"]);
+            bloodLevel = dmInt(dict!["speedLevel"]);
+            defenseLevel = dmInt(dict!["speedLevel"]);
+            attackLevel = dmInt(dict!["speedLevel"]);
+        }
+        
+        self.isPerson = person ?? false;
+    }
 }
