@@ -17,6 +17,13 @@ func dmInt(_ value: Any?) -> Int {
     }
 }
 
+func dmBool(_ value: Any?) -> Bool {
+    if value is Bool {
+        return value as! Bool;
+    }
+    return false;
+}
+
 func dmString(_ value: Any?) -> String {
     if value is String {
         return value as! String;

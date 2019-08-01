@@ -61,13 +61,14 @@ class NpcModel: NSObject {
         return base + growth * Double(foreverLevel+1) * Double(aLevel);
     }
 
-    func attackNpc(_ npc:NpcModel) {
+    func attackNpc(_ npc:NpcModel) -> FightModel {
         let tmpBlood = attack - npc.defense;
         npc.currentBlood -= tmpBlood;
-
-        print("\(npc.basic.name) : -\(tmpBlood) 剩余\(npc.currentBlood)");
-
         nextTime += speedTime;
+        
+//        print("\(npc.basic.name) : -\(tmpBlood) 剩余\(npc.currentBlood)");
+
+        return FightModel.init(name: npc.basic.name, tmp: Int(tmpBlood), current: Int(npc.currentBlood));
     }
     
     init(basicName:String,dict:[String:Any]?,person:Bool?) {
@@ -86,6 +87,8 @@ class NpcModel: NSObject {
         }
         
         self.isPerson = person ?? false;
+        
+        super.init();
     }
     
     func toDict() -> [String:Any] {

@@ -12,15 +12,15 @@ class HomeVC: DMBaseViewController , UITableViewDataSource , UITableViewDelegate
     
 
     let datas = [
-        "FightVC",
         "HeroListVC",
+        "GamePointVC",
     ];
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.title = "Home VC"
+        self.title = "Home VC (\(user.money))"
         
         
         
