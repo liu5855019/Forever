@@ -10,66 +10,52 @@ import UIKit
 
 class DMJsonTool: NSObject {
 
-
-
     // JSONString转换为字典
-    static func getDictionaryFromJSONString(jsonString:String) ->NSDictionary{
+    static func dictFromJson(_ jsonString:String) -> NSDictionary
+    {
+        let jsonData = jsonString.data(using: .utf8);
         
-        let jsonData:Data = jsonString.data(using: .utf8)!
-        
-        let dict = try? JSONSerialization.jsonObject(with: jsonData, options: .mutableContainers)
-        if dict != nil {
-            return dict as! NSDictionary
+        if jsonData != nil {
+            let dict = try? JSONSerialization.jsonObject(with: jsonData!, options: .mutableContainers);
+            if dict != nil {
+                return dict as! NSDictionary;
+            }
         }
-        return NSDictionary()
         
-        
+        return NSDictionary();
     }
-//    2、JSONString转换为数组
-
-    static func getArrayFromJSONString(jsonString:String) ->NSArray{
+    
+    //JSONString转换为数组
+    static func arrayFromJson(_ jsonString:String) ->NSArray {
         
-        let jsonData:Data = jsonString.data(using: .utf8)!
+        let jsonData = jsonString.data(using: .utf8)
         
-        let array = try? JSONSerialization.jsonObject(with: jsonData, options: .mutableContainers)
-        if array != nil {
-            return array as! NSArray
+        if jsonData != nil {
+            let array = try? JSONSerialization.jsonObject(with: jsonData!, options: .mutableContainers)
+            if array != nil {
+                return array as! NSArray
+            }
         }
         return []
     }
 
 
     /**
-     字典转换为JSONString
-     
-     - parameter dictionary: 字典参数
-     
-     - returns: JSONString
+        字典/数组转换为JSONString
      */
-    static func getJSONStringFromDictionary(dictionary:NSDictionary) -> String {
-        if (!JSONSerialization.isValidJSONObject(dictionary)) {
-            print("无法解析出JSONString")
-            return ""
-        }
-        let data : NSData! = try? JSONSerialization.data(withJSONObject: dictionary, options: []) as NSData!
-        let JSONString = NSString(data:data as Data,encoding: String.Encoding.utf8.rawValue)
-        return JSONString! as String
-        
-    }
-    
-
-    //数组转json
-    static func getJSONStringFromArray(array:NSArray) -> String {
-        
-        if (!JSONSerialization.isValidJSONObject(array)) {
+    static func jsonStringFromDictOrArray(obj:Any) -> String {
+        if (!JSONSerialization.isValidJSONObject(obj)) {
             print("无法解析出JSONString")
             return ""
         }
         
-        let data : NSData! = try? JSONSerialization.data(withJSONObject: array, options: []) as NSData!
-        let JSONString = NSString(data:data as Data,encoding: String.Encoding.utf8.rawValue)
-        return JSONString! as String
-        
+        let data = try? JSONSerialization.data(withJSONObject: obj, options: [])
+        if data != nil {
+            let JSONString = NSString(data:data! , encoding: String.Encoding.utf8.rawValue);
+            if JSONString != nil {
+                return JSONString! as String
+            }
+        }
+        return "";
     }
-    
 }

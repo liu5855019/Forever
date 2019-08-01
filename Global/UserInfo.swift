@@ -26,6 +26,8 @@ class UserInfo: NSObject , NSCoding {
     var password : String?
     var token : String?
     
+    var money:Int64 = 0;
+    
     var npcList:[NpcModel]?
     var heroList:[NpcModel]?
     
@@ -71,6 +73,7 @@ class UserInfo: NSObject , NSCoding {
         aCoder.encode(username, forKey: "username");
         aCoder.encode(password, forKey: "password");
         aCoder.encode(token, forKey: "token");
+        aCoder.encode(money,forKey: "money");
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -79,12 +82,22 @@ class UserInfo: NSObject , NSCoding {
         self.username = aDecoder.decodeObject(forKey: "username") as? String;
         self.password = aDecoder.decodeObject(forKey: "password") as? String;
         self.token = aDecoder.decodeObject(forKey: "token") as? String;
+        self.money = aDecoder.decodeInt64(forKey: "money");
     }
     
     //MARK: - NPC
     
     func initNpc() {
         self.readNpc();
+        self.readHero();
+        
+        if heroList?.count ?? 0 < 1 {
+            heroList = [];
+            heroList?.append(self.createHero(name: "李逍遥"));
+            
+            self.writeHero();
+        }
+        
     }
     
     func readNpc() {
@@ -93,19 +106,64 @@ class UserInfo: NSObject , NSCoding {
         let npcJson = try? String.init(contentsOfFile: npcPath);
         
         if npcJson != nil {
-            let arr = DMJsonTool.getArrayFromJSONString(jsonString: npcJson!);
-            
-            if arr != nil {
-                for dict in arr {
-                    print(dict)
-                }
+            let arr = DMJsonTool.arrayFromJson(npcJson!);
+            for dict in arr {
+                print(dict)
             }
+            
         }
+    }
+    
+    func readHero() {
+        let heroPath = UserInfo.getFilePath(file: kHeroListFile);
         
+        let json = try? String.init(contentsOfFile: heroPath);
         
+        if json != nil {
+            let arr = DMJsonTool.arrayFromJson(json!) as! [NSDictionary];
+            
+            var heros:[NpcModel] = [];
+            for dict in arr {
+                heros.append(NpcModel.init(basicName: dmString(dict["name"]), dict: dict as? [String : Any], person: true));
+            }
+            self.heroList = heros;
+        }
+    }
+    
+    func writeNpc() {
         
     }
     
+    func writeHero() {
+        let heroPath = UserInfo.getFilePath(file: kHeroListFile);
+        
+        var heroDictList:[[String:Any]] = [];
+        for hero in self.heroList! {
+            heroDictList.append(hero.toDict());
+        }
+        
+        let json = DMJsonTool.jsonStringFromDictOrArray(obj: heroDictList);
+        
+        if json.count > 0 {
+            do {
+                try json.write(toFile: heroPath, atomically: true, encoding: .utf8);
+                print("写入成功");
+            } catch {
+                print(error);
+                print("写入失败");
+            }
+        } else {
+            print(json);
+        }
+    }
+    
+    func createHero(name:String) -> NpcModel {
+        return NpcModel.init(basicName: name, dict: nil, person: true);
+    }
+    
+//    func createGamePoint(<#parameters#>) -> <#return type#> {
+//        <#function body#>
+//    }
     
     
 }

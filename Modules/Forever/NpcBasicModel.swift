@@ -32,6 +32,7 @@ class NpcBasicModel: NSObject {
     
     
     init(name:String) {
+        self.name = name;
         if name == "李逍遥" {
             imgName = "npc_1";
             attackGrowth  = 2;

@@ -11,8 +11,10 @@ import UIKit
 class HomeVC: DMBaseViewController , UITableViewDataSource , UITableViewDelegate {
     
 
-    let datas = ["FightVC"
-                 ];
+    let datas = [
+        "FightVC",
+        "HeroListVC",
+    ];
     
     
     override func viewDidLoad() {
@@ -20,7 +22,7 @@ class HomeVC: DMBaseViewController , UITableViewDataSource , UITableViewDelegate
 
         self.title = "Home VC"
         
-        print(user.name) ;
+        
         
         self.setupViews()
     }

@@ -20,6 +20,7 @@ class NpcModel: NSObject {
     var bloodLevel : Int = 1;
     var defenseLevel : Int = 1;
     var attackLevel : Int = 1;
+    var exp : Int = 0;
     var isPerson = false;
     
     // 生成的值
@@ -81,8 +82,23 @@ class NpcModel: NSObject {
             bloodLevel = dmInt(dict!["speedLevel"]);
             defenseLevel = dmInt(dict!["speedLevel"]);
             attackLevel = dmInt(dict!["speedLevel"]);
+            exp = dmInt(dict!["exp"]);
         }
         
         self.isPerson = person ?? false;
+    }
+    
+    func toDict() -> [String:Any] {
+        return [
+            "name":self.basic.name,
+            "leave":level,
+            "foreverLevel":foreverLevel,
+            "surplusSkillLeave":surplusSkillLeave,
+            "speedLevel":speedLevel,
+            "bloodLevel":bloodLevel,
+            "defenseLevel":defenseLevel,
+            "attackLevel":attackLevel,
+            "exp":exp
+        ];
     }
 }
