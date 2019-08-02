@@ -188,7 +188,7 @@ class UserInfo: NSObject , NSCoding {
     
     func createPoints() {
         pointList = [];
-        for i in 1...100 {
+        for i in 1...500 {
             let point = self.createGamePoint(point: i);
             pointList?.append(point);
         }
@@ -204,13 +204,13 @@ class UserInfo: NSObject , NSCoding {
         model.isOver = false;
         
         model.money = valueWith(num: point, base: 1000, growth: 1.02);
-        model.exp = valueWith(num: point, base: 1000, growth: 1.05);
+        model.exp = valueWith(num: point, base: 1000, growth: 1.025);
         
         model.npc.level = point;
-        model.npc.attackLevel = point;
-        model.npc.defenseLevel = point;
-        model.npc.bloodLevel = point;
-        model.npc.speedLevel = point;
+        model.npc.attackLevel = point * 2;
+        model.npc.defenseLevel = point * 2;
+        model.npc.bloodLevel = point * 2;
+        model.npc.speedLevel = point * 2;
     
         return model;
     }

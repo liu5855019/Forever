@@ -35,15 +35,15 @@ class NpcBasicModel: NSObject {
         self.name = name;
         if name == "李逍遥" {
             imgName = "npc_1";
-            attackGrowth  = 2;
+            attackGrowth  = 2.1;
             defenseGrowth  = 1.5;
             bloodGrowth  = 12;
             speedGrowth = 0.038;
         } else if name == "怪物1" {
             imgName = "npc_11";
-            attackGrowth  = 1.5;
-            defenseGrowth  = 1.2;
-            bloodGrowth  = 10;
+            attackGrowth  = 1.8;
+            defenseGrowth  = 1.5;
+            bloodGrowth  = 15;
             speedGrowth = 0.033;
         }
     }

@@ -16,6 +16,11 @@ class GamePointVC: DMBaseViewController , UITableViewDelegate , UITableViewDataS
         self.view.addSubview(self.tabV);
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated);
+        
+        self.tabV.reloadData();
+    }
 
     //MARK: - TABLEVIEW
     lazy var tabV: UITableView = {
@@ -67,8 +72,7 @@ class GamePointVC: DMBaseViewController , UITableViewDelegate , UITableViewDataS
         if backPoint == nil || backPoint?.isOver == true {
             let vc = FightVC.init(person: (user.heroList?.first)!, point: user.pointList![indexPath.row]);
             
-            self.navigationController?.pushViewController(vc, animated: true);
-            
+            self.present(vc, animated: true, completion: nil);
         } else {
             self.view.makeToast("请先打通上一关");
         }

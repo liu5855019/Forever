@@ -12,10 +12,12 @@ class FightModel: NSObject {
     let name: String;
     let tmpBlood: Int;
     let currentBlood: Int;
+    let blood:Int;
     
-    init(name:String , tmp:Int , current:Int) {
+    init(name:String , tmp:Int , current:Int , all:Int) {
         self.name = name;
         self.tmpBlood = tmp;
         self.currentBlood = current;
+        self.blood = all;
     }
 }

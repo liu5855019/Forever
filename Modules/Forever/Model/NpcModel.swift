@@ -61,15 +61,68 @@ class NpcModel: NSObject {
         return base + growth * Double(foreverLevel+1) * Double(aLevel);
     }
 
+    // 攻击另一个 npc
     func attackNpc(_ npc:NpcModel) -> FightModel {
-        let tmpBlood = attack - npc.defense;
+        var tmpBlood = attack - npc.defense;
+        if tmpBlood < 1 {
+            tmpBlood = 1;
+        }
+        
         npc.currentBlood -= tmpBlood;
+        if npc.currentBlood < 0 {
+            npc.currentBlood = 0;
+        }
         nextTime += speedTime;
         
-//        print("\(npc.basic.name) : -\(tmpBlood) 剩余\(npc.currentBlood)");
-
-        return FightModel.init(name: npc.basic.name, tmp: Int(tmpBlood), current: Int(npc.currentBlood));
+        return FightModel.init(name: npc.basic.name, tmp: Int(tmpBlood), current: Int(npc.currentBlood),all: Int(npc.blood));
     }
+    
+    // 加经验
+    func addExp(exp:Int) {
+        self.exp += exp;
+        let needExp = self.getNeedExp();
+        user.writeHero();
+        
+        if self.exp >= needExp {
+            self.level += 1;
+            if self.level > 100 {
+                self.forever();
+            } else {
+                self.exp -= needExp;
+                self.surplusSkillLeave += 4;
+                self.attackLevel += 1;
+                self.defenseLevel += 1;
+                self.bloodLevel += 1;
+                self.speedLevel += 1;
+                user.writeHero();
+                UIApplication.shared.keyWindow?.makeToast("恭喜升级!");
+            }
+        }
+    }
+    
+    func getNeedExp() -> Int {
+        var needExp = 0;
+        for _ in 1...level {
+            needExp += Int(1000 * (1.1 + 0.1*Double(foreverLevel)));
+        }
+        return needExp;
+    }
+    
+    //转生
+    func forever() {
+        self.level = 1;
+        self.foreverLevel += 1;
+        self.surplusSkillLeave = 0;
+        self.exp = 0;
+ 
+        self.speedLevel = 1;
+        self.bloodLevel = 1;
+        self.defenseLevel = 1;
+        self.attackLevel = 1;
+        user.writeHero();
+        UIApplication.shared.keyWindow?.makeToast("恭喜转生!");
+    }
+    
     
     init(basicName:String,dict:[String:Any]?,person:Bool?) {
         basic = NpcBasicModel.init(name:basicName);
@@ -80,9 +133,9 @@ class NpcModel: NSObject {
             foreverLevel = dmInt(dict!["foreverLevel"]);
             surplusSkillLeave = dmInt(dict!["surplusSkillLeave"]);    ///< 剩余技能点数
             speedLevel = dmInt(dict!["speedLevel"]);
-            bloodLevel = dmInt(dict!["speedLevel"]);
-            defenseLevel = dmInt(dict!["speedLevel"]);
-            attackLevel = dmInt(dict!["speedLevel"]);
+            bloodLevel = dmInt(dict!["bloodLevel"]);
+            defenseLevel = dmInt(dict!["defenseLevel"]);
+            attackLevel = dmInt(dict!["attackLevel"]);
             exp = dmInt(dict!["exp"]);
         }
         

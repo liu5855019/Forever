@@ -24,7 +24,11 @@ class HeroDetailVC: DMBaseViewController {
 
     @IBOutlet weak var imgV: UIImageView!
     @IBOutlet weak var nameLab: UILabel!
-    @IBOutlet weak var moneyLab: UILabel!
+    @IBOutlet weak var leaveLab: UILabel!
+    @IBOutlet weak var foreverLeaveLab: UILabel!
+    @IBOutlet weak var currentExp: UILabel!
+    @IBOutlet weak var needExp: UILabel!
+    
     
     @IBOutlet weak var surplusSkill: UILabel!
     
@@ -46,7 +50,10 @@ class HeroDetailVC: DMBaseViewController {
 
         imgV.image = UIImage.init(named: hero.basic.imgName.appending("_1.png"));
         nameLab.text = hero.basic.name;
-        moneyLab.text = "\(hero.level)";
+        leaveLab.text = "\(hero.level)";
+        foreverLeaveLab.text = "\(hero.foreverLevel)";
+        currentExp.text = "\(hero.exp)";
+        needExp.text = "\(hero.getNeedExp())";
         
         self.updateValues();
     }
@@ -75,6 +82,7 @@ class HeroDetailVC: DMBaseViewController {
             hero.surplusSkillLeave -= 1;
             hero.attackLevel += 1;
             self.updateValues();
+            user.writeHero();
         }
     }
     
@@ -83,6 +91,7 @@ class HeroDetailVC: DMBaseViewController {
             hero.surplusSkillLeave -= 1;
             hero.defenseLevel += 1;
             self.updateValues();
+            user.writeHero();
         }
     }
     
@@ -91,6 +100,7 @@ class HeroDetailVC: DMBaseViewController {
             hero.surplusSkillLeave -= 1;
             hero.bloodLevel += 1;
             self.updateValues();
+            user.writeHero();
         }
     }
     
@@ -100,11 +110,9 @@ class HeroDetailVC: DMBaseViewController {
             hero.surplusSkillLeave -= 1;
             hero.speedLevel += 1;
             self.updateValues();
+            user.writeHero();
         }
     }
     
-    @IBAction func saveDatas(_ sender: Any) {
-        user.writeHero();
-        
-    }
+
 }

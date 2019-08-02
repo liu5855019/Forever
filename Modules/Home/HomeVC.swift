@@ -20,11 +20,13 @@ class HomeVC: DMBaseViewController , UITableViewDataSource , UITableViewDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.title = "Home VC (\(user.money))"
+        self.setupViews();
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated);
         
-        
-        
-        self.setupViews()
+        self.title = "Home VC (\(user.money))";
     }
     
     func setupViews()

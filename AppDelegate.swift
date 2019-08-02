@@ -75,6 +75,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func configToast() -> Void {
         ToastManager.shared.position = .center;
         ToastManager.shared.duration = 2.5;
+        ToastManager.shared.isQueueEnabled = true;
     }
     
     

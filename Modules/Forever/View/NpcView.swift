@@ -14,6 +14,7 @@ class NpcView: UIView {
     let imgV = UIImageView();
     let bloodV = UIProgressView();
     let bloodLab = UILabel();
+    let levelLab = UILabel();
     
     var _model:NpcModel;
     
@@ -34,12 +35,18 @@ class NpcView: UIView {
     
     func setupViews() {
         
+        self.addSubview(levelLab)
         self.addSubview(nameLab);
         self.addSubview(imgV);
         self.addSubview(bloodV);
         self.addSubview(bloodLab);
         
-        nameLab.textColor = UIColor.green;
+        
+        levelLab.textColor = UIColor.green;
+        levelLab.font = UIFont.systemFont(ofSize: 15);
+        levelLab.textAlignment = NSTextAlignment.center;
+        
+        nameLab.textColor = UIColor.orange;
         nameLab.font = UIFont.systemFont(ofSize: 15);
         nameLab.textAlignment = NSTextAlignment.center;
         
@@ -54,6 +61,7 @@ class NpcView: UIView {
         imgV.animationDuration = 0.6;
         
 
+        levelLab.text = "lv. \(_model.level)";
         nameLab.text = _model.basic.name;
         bloodLab.text = "\(_model.currentBlood)/\(_model.blood)";
         bloodV.progress = Float(_model.currentBlood / _model.blood);
@@ -65,7 +73,12 @@ class NpcView: UIView {
     
     func setupLayouts() {
         
+        levelLab.snp.makeConstraints { (make) in
+            make.left.right.equalTo(0);
+        };
+        
         nameLab.snp.makeConstraints { (make) in
+            make.top.equalTo(levelLab.snp.bottom).offset(2);
             make.left.right.equalTo(0);
         };
         
@@ -90,23 +103,37 @@ class NpcView: UIView {
     func attackNpc(_ npc:NpcView) {
         
         let oldFrame = self.frame;
-        let newFrame = self._model.isPerson ? CGRect.init(x: 220, y: 90, width: self.frame.size.width, height: self.frame.size.height) : CGRect.init(x: 380, y: 90, width: self.frame.size.width, height: self.frame.size.height);
+        let newFrame = npc.frame;
 
         self.imgV.startAnimating();
         UIView.animate(withDuration: 0.5, animations: {
-//            self.frame = newFrame;
+            self.frame = newFrame;
             
         }) { (complete) in
             if complete {
                 UIView.animate(withDuration: 0.5, animations: {
-                    //                self.frame = oldFrame;
-                    npc.bloodV.progress = Float(npc._model.currentBlood / npc._model.blood);
-                    npc.bloodLab.text = "\(Int(npc._model.currentBlood) )/\(Int(npc._model.blood))";
+                    self.frame = oldFrame;
                 })
             }
         }
-        
-        self._model.attackNpc(npc._model);
     }
-
+    
+    func removeBlood(fight:FightModel) {
+        
+        self.bloodLab.text = "\(fight.currentBlood)/\(fight.blood)";
+        
+        let lab = UILabel.init(frame: CGRect.init(x: 0, y: 40, width: 100, height: 20));
+        self.addSubview(lab);
+        lab.textAlignment = .center;
+        lab.textColor = UIColor.red;
+        lab.font = UIFont.boldSystemFont(ofSize: 18);
+        lab.text = "-\(fight.tmpBlood)";
+        
+        UIView.animate(withDuration: 0.5, animations: {
+            self.bloodV.progress = Float(Double(fight.currentBlood) / Double(fight.blood));
+            lab.frame = CGRect.init(x: 0, y: 0, width: 100, height: 20)
+        }) { (complete) in
+            lab.removeFromSuperview();
+        }
+    }
 }
