@@ -149,10 +149,10 @@ class UserInfo: NSObject , NSCoding {
         if json.count > 0 {
             do {
                 try json.write(toFile: pointPath, atomically: true, encoding: .utf8);
-                print("写入成功");
+                print("关卡 写入成功");
             } catch {
                 print(error);
-                print("写入失败");
+                print("关卡 写入失败");
             }
         } else {
             print(json);
@@ -172,10 +172,10 @@ class UserInfo: NSObject , NSCoding {
         if json.count > 0 {
             do {
                 try json.write(toFile: heroPath, atomically: true, encoding: .utf8);
-                print("写入成功");
+                print("hero 写入成功");
             } catch {
                 print(error);
-                print("写入失败");
+                print("hero 写入失败");
             }
         } else {
             print(json);
@@ -183,7 +183,9 @@ class UserInfo: NSObject , NSCoding {
     }
     
     func createHero(name:String) -> NpcModel {
-        return NpcModel.init(basicName: name, dict: nil, person: true);
+        let npc = NpcModel.init(basicName: name, dict: nil, person: true);
+        npc.surplusSkillLeave = 10;
+        return npc;
     }
     
     func createPoints() {
@@ -203,8 +205,8 @@ class UserInfo: NSObject , NSCoding {
         
         model.isOver = false;
         
-        model.money = valueWith(num: point, base: 1000, growth: 1.02);
-        model.exp = valueWith(num: point, base: 1000, growth: 1.025);
+        model.money = valueWith(num: point, base: 1000, growth: 5);
+        model.exp = valueWith(num: point, base: 1000, growth: 2);
         
         model.npc.level = point;
         model.npc.attackLevel = point * 2;
@@ -221,7 +223,7 @@ class UserInfo: NSObject , NSCoding {
         var value = base;
         
         for _ in 1...num {
-            value = Int(growth * Double(value));
+            value += Int(growth * Double(100));
         }
         
         let random = arc4random()%400;

@@ -14,6 +14,15 @@ class GamePointVC: DMBaseViewController , UITableViewDelegate , UITableViewDataS
         super.viewDidLoad()
 
         self.view.addSubview(self.tabV);
+        
+        var index = 0;
+        for i in 0...(user.pointList?.count ?? 0) {
+            if !(user.pointList?[i].isOver ?? false) {
+                index = i;
+                break;
+            }
+        }
+        self.tabV.scrollToRow(at: IndexPath.init(row: index, section: 0), at: .middle, animated: false);
     }
     
     override func viewWillAppear(_ animated: Bool) {

@@ -37,7 +37,7 @@ class FightVC: DMBaseViewController {
         
         self.createFightDatas();
         
-        self.perform(#selector(playFightDatas), with: nil, afterDelay: 1.5);
+        self.perform(#selector(playFightDatas), with: nil, afterDelay: 0.75);
     }
     
     func setup() {
